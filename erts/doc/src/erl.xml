@@ -395,9 +395,12 @@
           similar to <c><![CDATA[code:add_pathsz/1]]></c>. See
           <seealso marker="kernel:code">code(3)</seealso>.</p>
       </item>
-      <tag><c><![CDATA[-remsh Node]]></c></tag>
+      <tag><c><![CDATA[-remsh Node [Shell]]]></c></tag>
       <item>
-        <p>Starts Erlang with a remote shell connected to <c><![CDATA[Node]]></c>.</p>
+        <p>Starts Erlang with a remote <c><![CDATA[Shell]]></c> connected to
+	<c><![CDATA[Node]]></c>.
+	If no <c><![CDATA[Shell]]></c> provided, starts default shell. See
+	<seealso marker="stdlib:shell">shell(3)</seealso>.</p>
       </item>
       <tag><c><![CDATA[-rsh Program]]></c></tag>
       <item>

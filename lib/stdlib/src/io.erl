@@ -146,9 +146,12 @@ get_password(Io) ->
 -type encoding()   :: 'latin1' | 'unicode' | 'utf8' | 'utf16' | 'utf32'
                     | {'utf16', 'big' | 'little'} | {'utf32','big' | 'little'}.
 -type expand_fun() :: fun((term()) -> {'yes'|'no', string(), [string(), ...]}).
+-type expandfmt_fun() :: fun(({non_neg_integer(), non_neg_integer()}, list()) ->
+				    iolist()).
 -type opt_pair()   :: {'binary', boolean()}
                     | {'echo', boolean()}
                     | {'expand_fun', expand_fun()}
+                    | {'expandfmt_fun', expandfmt_fun()}
                     | {'encoding', encoding()}.
 
 -spec getopts() -> [opt_pair()].

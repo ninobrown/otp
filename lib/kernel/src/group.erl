@@ -37,7 +37,14 @@ server(Drv, Shell, Options) ->
     put(user_drv, Drv),
     put(expand_fun,
 	proplists:get_value(expand_fun, Options,
-			    fun(B) -> edlin_expand:expand(B) end)),
+			    fun(B) ->
+				    edlin_expand:expand(B)
+			    end)),
+    put(expandfmt_fun,
+	proplists:get_value(expandfmt_fun, Options,
+			    fun(G, B) ->
+				    edlin_expand:format_matches(G, B)
+			    end)),
     put(echo, proplists:get_value(echo, Options, true)),
     
     start_shell(Shell),
@@ -351,11 +358,15 @@ check_valid_opts([{echo,_}|T]) ->
     check_valid_opts(T);
 check_valid_opts([{expand_fun,_}|T]) ->
     check_valid_opts(T);
+check_valid_opts([{expandfmt_fun,_}|T]) ->
+    check_valid_opts(T);
 check_valid_opts(_) ->
     false.
 
 do_setopts(Opts, Drv, Buf) ->
     put(expand_fun, proplists:get_value(expand_fun, Opts, get(expand_fun))),
+    put(expandfmt_fun,
+	proplists:get_value(expandfmt_fun, Opts, get(expandfmt_fun))),
     put(echo, proplists:get_value(echo, Opts, get(echo))),
     case proplists:get_value(encoding,Opts) of
 	Valid when Valid =:= unicode; Valid =:= utf8 ->
@@ -386,6 +397,12 @@ getopts(Drv,Buf) ->
 			   _ ->
 			       false
 		       end},
+    Fmt = {expandfmt_fun, case get(expandfmt_fun) of
+				   Func1 when is_function(Func1) ->
+				       Func1;
+				   _ ->
+				       false
+			       end},
     Echo = {echo, case get(echo) of
 		     Bool when Bool =:= true; Bool =:= false ->
 			 Bool;
@@ -402,7 +419,7 @@ getopts(Drv,Buf) ->
 			true -> unicode;
 			_ -> latin1
 		     end},
-    {ok,[Exp,Echo,Bin,Uni],Buf}.
+    {ok,[Exp,Fmt,Echo,Bin,Uni],Buf}.
     
 
 %% get_chars(Prompt, Module, Function, XtraArgument, Drv, Buffer)
@@ -526,9 +543,11 @@ get_line1({expand, Before, Cs0, Cont,Rs}, Drv, Ls0, Encoding) ->
     Cs1 = append(Add, Cs0, Encoding), %%XXX:PaN should this always be unicode?
     Cs = case Matches of
 	     [] -> Cs1;
-	     _ -> MatchStr = edlin_expand:format_matches(Matches),
-		  send_drv(Drv, {put_chars, unicode, unicode:characters_to_binary(MatchStr,unicode)}),
-		  [$\^L | Cs1]
+	     _ ->
+		 FmtFun = get(expandfmt_fun),
+		 MatchStr = FmtFun(get_tty_geometry(Drv), Matches),
+		 send_drv(Drv, {put_chars, unicode, unicode:characters_to_binary(MatchStr,unicode)}),
+		 [$\^L | Cs1]
 	 end,
     get_line1(edlin:edit_line(Cs, Cont), Drv, Ls0, Encoding);
 get_line1({undefined,_Char,Cs,Cont,Rs}, Drv, Ls, Encoding) ->

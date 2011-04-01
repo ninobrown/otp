@@ -263,10 +263,26 @@ charlist() = [unicode_char() | unicode_binary() | charlist()]
               will be printed and the current input line will be written
               once again.</p>
             <p>Trivial example (beep on anything except empty line, which
-              is expanded to "quit"):</p>
+              is expanded to "help()."):</p>
             <code type="none">
- fun("") -> {yes, "quit", []};
-    (_) -> {no, "", ["quit"]} end</code>
+ fun("") -> {yes, "help().", []};
+    (_) -> {no, "", ["help()."]} end</code>
+            <p>This option is supported by the standard shell only (group.erl).</p>
+          </item>
+          <tag><c>{expandfmt_fun, fun({Width, Height}, List)}</c></tag>
+          <item>
+            <p>Provides a function for formatting results, given by
+	      expand_fun function.</p>
+
+            <p>This option complements expand_fun parameter, formatting
+	      result of tab-completion. First parameter is a two-tuple,
+	      that describes geometry (Width and Height) of terminal.
+	      Takes list of tab-expanded values, and should return
+	      IO list suitable for outputting to terminal.</p>
+            <p>For example taken from expand_fun description,
+	      function that prints short description of command would be:</p>
+            <code type="none">
+ fun(_, H) -> ["\n", H, " -- prints help on shell commands\n"] end.</code>
             <p>This option is supported by the standard shell only (group.erl).</p>
           </item>
           <tag><c>{encoding, latin1 | unicode}</c></tag>

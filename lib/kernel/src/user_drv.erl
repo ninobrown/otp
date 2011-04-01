@@ -118,7 +118,11 @@ server1(Iport, Oport, Shell) ->
 	case init:get_argument(remsh) of
 	    {ok,[[Node]]} ->
 		RShell = {list_to_atom(Node),shell,start,[]},
-		RGr = group:start(self(), RShell),
+		RGr = start_remote_shell(RShell),
+		{RGr,RShell};
+	    {ok,[[Node,Shell2]]} ->
+		RShell = {list_to_atom(Node),list_to_atom(Shell2),start,[]},
+		RGr = start_remote_shell(RShell),
 		{RGr,RShell};
 	    E when E =:= error ; E =:= {ok,[[]]} ->
 		{group:start(self(), Shell),Shell}
@@ -277,7 +281,8 @@ handle_escape(Iport, Oport, User, Gr) ->
 			gr_add_cur(Gr1, Pid1, {shell,start,[]}));
 
 	_ ->					% {ok,jcl} | undefined
-	    io_request({put_chars,unicode,"\nUser switch command\n"}, Iport, Oport),
+	    io_request({put_chars,unicode,
+			"\nUser switch command (? for help)\n"}, Iport, Oport),
 	    server_loop(Iport, Oport, User, switch_loop(Iport, Oport, Gr))
     end.
 
@@ -362,25 +367,34 @@ switch_cmd({ok,[{atom,_,s}],_}, Iport, Oport, Gr0) ->
     Pid = group:start(self(), {shell,start,[]}),
     Gr = gr_add_cur(Gr0, Pid, {shell,start,[]}),
     switch_loop(Iport, Oport, Gr);
-switch_cmd({ok,[{atom,_,r}],_}, Iport, Oport, Gr0) ->
+switch_cmd({ok,[{atom,_,r}|T],_}, Iport, Oport, Gr0) ->
     case is_alive() of
 	true ->
-	    Node = pool:get_node(),
-	    Pid = group:start(self(), {Node,shell,start,[]}),
-	    Gr = gr_add_cur(Gr0, Pid, {Node,shell,start,[]}),
-	    switch_loop(Iport, Oport, Gr);
+	    switch_cmd({r, T}, Iport, Oport, Gr0);
 	false ->
 	    io_request({put_chars,unicode,"Not alive\n"}, Iport, Oport),
 	    switch_loop(Iport, Oport, Gr0)
     end;
-switch_cmd({ok,[{atom,_,r},{atom,_,Node}],_}, Iport, Oport, Gr0) ->
-    Pid = group:start(self(), {Node,shell,start,[]}),
-    Gr = gr_add_cur(Gr0, Pid, {Node,shell,start,[]}),
+switch_cmd({r,[]}, Iport, Oport, Gr0) ->
+    case catch pool:get_node() of
+	{'EXIT', _} ->
+	    io_request({put_chars,unicode,"No pool\n"}, Iport, Oport),
+	    switch_loop(Iport, Oport, Gr0);
+	Node ->
+	    RShell = {pool:get_node(),shell,start,[]},
+	    Pid = start_remote_shell(RShell),
+	    Gr = gr_add_cur(Gr0, Pid, RShell),
+	    switch_loop(Iport, Oport, Gr)
+    end;
+switch_cmd({r,[{atom,_,Node}]}, Iport, Oport, Gr0) ->
+    RShell = {Node,shell,start,[]},
+    Pid = start_remote_shell(RShell),
+    Gr = gr_add_cur(Gr0, Pid, RShell),
     switch_loop(Iport, Oport, Gr);
-switch_cmd({ok,[{atom,_,r},{atom,_,Node},{atom,_,Shell}],_},
-	   Iport, Oport, Gr0) ->
-    Pid = group:start(self(), {Node,Shell,start,[]}),
-    Gr = gr_add_cur(Gr0, Pid, {Node,Shell,start,[]}),
+switch_cmd({r,[{atom,_,Node},{atom,_,Shell}]}, Iport, Oport, Gr0) ->
+    RShell = {Node,Shell,start,[]},
+    Pid = start_remote_shell(RShell),
+    Gr = gr_add_cur(Gr0, Pid, RShell),
     switch_loop(Iport, Oport, Gr);
 switch_cmd({ok,[{atom,_,q}],_}, Iport, Oport, Gr) ->
     case erlang:system_info(break_ignored) of
@@ -405,26 +419,49 @@ switch_cmd(_Ts, Iport, Oport, Gr) ->
     io_request({put_chars,unicode,"Illegal input\n"}, Iport, Oport),
     switch_loop(Iport, Oport, Gr).
 
+start_remote_shell({Node, _,_,_}=RShell) ->
+    ExFun = fun(B)->
+		    rpc:call(Node,edlin_expand,expand,[B])
+	    end,
+    group:start(self(), RShell, [{expand_fun, ExFun}]).
+
 unknown_group(Iport, Oport, Gr) ->
     io_request({put_chars,unicode,"Unknown job\n"}, Iport, Oport),
     switch_loop(Iport, Oport, Gr).
 
 list_commands(Iport, Oport) ->
-    QuitReq = case erlang:system_info(break_ignored) of
-		  true -> 
-		      [];
-		  false ->
-		      [{put_chars,unicode,"  q        - quit erlang\n"}]
-	      end,
-    io_requests([{put_chars, unicode,"  c [nn]            - connect to job\n"},
-		 {put_chars, unicode,"  i [nn]            - interrupt job\n"},
-		 {put_chars, unicode,"  k [nn]            - kill job\n"},
-		 {put_chars, unicode,"  j                 - list all jobs\n"},
-		 {put_chars, unicode,"  s [shell]         - start local shell\n"},
-		 {put_chars, unicode,"  r [node [shell]]  - start remote shell\n"}] ++
-		QuitReq ++
-		[{put_chars, unicode,"  ? | h             - this message\n"}],
-		Iport, Oport).
+    Items = [{"c [nn]", "connect to job"},
+	     {"i [nn]", "interrupt job"},
+	     {"k [nn]", "kill job"},
+	     {"j", "list all jobs"},
+	     {"s [shell]", "start local shell"},
+	     case erlang:node() of
+		 nonode@nohost ->
+		     [];
+		 _ ->
+		     {"r [node [shell]]", "start remote shell"}
+	     end,
+	     case erlang:system_info(break_ignored) of
+		 true ->
+		     [];
+		 false ->
+		     {"q", "quit erlang"}
+	     end,
+	     {"?|h", "this message"}],
+
+    MI = lists:foldr(
+	   fun({I, _}, MI) ->
+		   max(length(I), MI);
+	      ([], MI) ->
+		   MI
+	   end, 0, Items),
+
+    lists:map(
+      fun({I, C}) ->
+	      F = ["   ", string:left(I, MI+2), "- ", C, "\n"],
+	      io_request({put_chars, unicode, F}, Iport, Oport);
+	 ([]) -> skip
+      end, Items).
 
 get_line({done,Line,_Rest,Rs}, Iport, Oport) ->
     io_requests(Rs, Iport, Oport),

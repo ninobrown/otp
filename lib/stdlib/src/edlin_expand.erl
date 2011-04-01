@@ -20,7 +20,7 @@
 
 %% a default expand function for edlin, expanding modules and functions
 
--export([expand/1, format_matches/1]).
+-export([expand/1, format_matches/2]).
 
 -import(lists, [reverse/1, nthtail/2, prefix/2]).
 
@@ -95,32 +95,41 @@ match(Prefix, Alts, Extra) ->
     end.
 
 %% Return the list of names L in multiple columns.
-format_matches(L) ->
-    S = format_col(lists:sort(L), []),
+format_matches({W, _}, L) ->
+    S = format_col(W, lists:sort(L), []),
     ["\n" | S].
 
-format_col([], _) -> [];
-format_col(L, Acc) -> format_col(L, field_width(L), 0, Acc).
+format_col(_, [], _) -> [];
+format_col(W, L, Acc) -> format_col(W, L, field_width(L), 0, Acc).
 
-format_col(X, Width, Len, Acc) when Width + Len > 79 ->
-    format_col(X, Width, 0, ["\n" | Acc]);
-format_col([A|T], Width, Len, Acc0) ->
-    H = case A of
- 	    %% If it's a tuple {string(), integer()}, we assume it's an
- 	    %% arity, and meant to be printed.
-	    {H0, I} when is_integer(I) ->
-		H0 ++ "/" ++ integer_to_list(I);
-	    {H1, _} -> H1;
- 	    H2 -> H2
- 	end,
-    Acc = [io_lib:format("~-*s", [Width,H]) | Acc0],
-    format_col(T, Width, Len+Width, Acc);
-format_col([], _, _, Acc) ->
-    lists:reverse(Acc, "\n").
+format_col(_, [], _, _, Acc) ->
+    lists:reverse(Acc, "\n");
+
+%% If it's a tuple {string(), integer()}, we assume it's an
+%% arity, and meant to be printed.
+format_col(W, [{H, I}|T], WF, L, Acc) when is_integer(I) ->
+    format_col(W, [[H, "/", integer_to_list(I)]|T], WF, L, Acc);
+%% For matched module name, parameter is
+%% {string(), FileName}, FileName :: string()
+format_col(W, [{H, _}|T], WF, L, Acc) ->
+    format_col(W, [H|T], WF, L, Acc);
+
+format_col(W, X, WF, L, Acc) when L > 0, L + WF >= W ->
+    format_col(W, X, WF, 0, ["\n" | Acc]);
+format_col(W, [H|T], WF, Len, Acc0) when WF >= W ->
+    format_col(W, T, WF, WF+Len, [H | Acc0]);
+format_col(W, [H|T], WF, L, Acc0) ->
+    Acc = [io_lib:format("~-*s", [WF,H]) | Acc0],
+    format_col(W, T, WF, L+WF, Acc).
 
 field_width(L) -> field_width(L, 0).
 
-field_width([{H,_}|T], W) ->
+field_width([{H, I}|T], W) when is_integer(I) ->
+    case length(H)+length(integer_to_list(I))+1 of
+	L when L > W -> field_width(T, L);
+	_ -> field_width(T, W)
+    end;
+field_width([{H, _}|T], W) ->
     case length(H) of
  	L when L > W -> field_width(T, L);
  	_ -> field_width(T, W)
@@ -130,10 +139,8 @@ field_width([H|T], W) ->
  	L when L > W -> field_width(T, L);
  	_ -> field_width(T, W)
     end;
-field_width([], W) when W < 40 ->
-    W + 4;
-field_width([], _) ->
-    40.
+field_width([], W) ->
+    W+2.
 
 longest_common_head([]) ->
     no;
