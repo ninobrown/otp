@@ -2563,7 +2563,7 @@ check_type({type, L, 'fun', [Dom, Range]}, SeenVars, St) ->
     St1 =
 	case Dom of
 	    {type, _, product, _} -> St;
-	    {type, _, any} -> St;
+	    {type, _, any, _} -> St;
 	    _ -> add_error(L, {type_syntax, 'fun'}, St)
 	end,
     check_type({type, -1, product, [Dom, Range]}, SeenVars, St1);

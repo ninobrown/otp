@@ -1,6 +1,5 @@
 /*
  * %CopyrightBegin%
-
  *
  * Copyright Ericsson AB 2001-2011. All Rights Reserved.
  *

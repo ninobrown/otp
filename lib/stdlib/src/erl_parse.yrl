@@ -166,7 +166,7 @@ type -> 'fun' '(' fun_type_100 ')'        : '$3'.
 
 fun_type_100 -> '(' '...' ')' '->' top_type
                                           : {type, ?line('$1'), 'fun',
-                                             [{type, ?line('$1'), any}, '$5']}.
+                                             [{type, ?line('$1'), any, []}, '$5']}.
 fun_type_100 -> fun_type                  : '$1'.
 
 fun_type -> '(' ')' '->' top_type  : {type, ?line('$1'), 'fun',
