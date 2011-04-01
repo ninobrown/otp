@@ -1976,8 +1976,14 @@ tailrecur_ne:
 		    if (!is_binary_rel(b,b_base)) {
 			goto not_equal;
 		    }
-		    a_size = binary_size_rel(a,a_base);
-		    b_size = binary_size_rel(b,b_base);
+		    if (ERTS_TERM_IS_MAGIC_BINARY(rterm2wterm(a,a_base)) &&
+			ERTS_TERM_IS_MAGIC_BINARY(rterm2wterm(b,b_base))) {
+		        a_size = ((ProcBin *)binary_val_rel(a,a_base))->val->orig_size;
+		        b_size = ((ProcBin *)binary_val_rel(b,b_base))->val->orig_size;
+		    } else {
+		        a_size = binary_size_rel(a,a_base);
+		        b_size = binary_size_rel(b,b_base);
+		    }
 		    if (a_size != b_size) {
 			goto not_equal;
 		    }
@@ -2609,6 +2615,11 @@ tailrecur_ne:
 		    int cmp;
 		    byte* a_ptr;
 		    byte* b_ptr;
+		    if (ERTS_TERM_IS_MAGIC_BINARY(rterm2wterm(a,a_base)) &&
+			ERTS_TERM_IS_MAGIC_BINARY(rterm2wterm(b,b_base))) {
+		        a_size = ((ProcBin *)binary_val_rel(a,a_base))->val->orig_size;
+		        b_size = ((ProcBin *)binary_val_rel(b,b_base))->val->orig_size;
+		    }
 		    ERTS_GET_BINARY_BYTES_REL(a, a_ptr, a_bitoffs, a_bitsize, a_base);
 		    ERTS_GET_BINARY_BYTES_REL(b, b_ptr, b_bitoffs, b_bitsize, b_base);
 		    if ((a_bitsize | b_bitsize | a_bitoffs | b_bitoffs) == 0) {
