@@ -1470,7 +1470,7 @@ const char* parse_topology_spec_group(erts_cpu_info_t *cpuinfo, const char* xml,
 	    }
 	    cpu_str_size = next_cpu_end - next_cpu_cdata;
 	    cpu_str = (char*) malloc(cpu_str_size + 1);
-	    memcpy(cpu_str, (const char*) next_cpu_cdata, cpu_str_size);
+	    memcpy(cpu_str, next_cpu_cdata, cpu_str_size);
 	    cpu_str[cpu_str_size] = 0;
 	    for (cpu_crsr = strtok_r(cpu_str, " \t,", &brkb); cpu_crsr; cpu_crsr = strtok_r(NULL, " \t,", &brkb)) {
 		int cpu_id;

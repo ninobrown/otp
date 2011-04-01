@@ -2240,7 +2240,7 @@ check_balance(ErtsRunQueue *c_rq)
 	    if (max_len != 0) {
 		int avail = avg.prio[pix].avail;
 		if (avail != 0) {
-		    max_len = (int) ((100*((Sint64) max_len) - 1)
+		    max_len = ((100*((Sint64) max_len) - 1)
 				     / ((Sint64) avail)) + 1;
 		    avg.prio[pix].max_len = max_len;
 		    ASSERT(max_len >= 0);
@@ -2528,7 +2528,7 @@ erts_init_scheduling(int mrq, int no_schedulers, int no_schedulers_online)
 
     /* Create and initialize run queues */
 
-    n = (int) (mrq ? no_schedulers : 1);
+    n = (mrq ? no_schedulers : 1);
 
     erts_aligned_run_queues = 
 	erts_alloc_permanent_cache_aligned(ERTS_ALC_T_RUNQS,
@@ -2621,7 +2621,7 @@ erts_init_scheduling(int mrq, int no_schedulers, int no_schedulers_online)
 
 #endif
 
-    n = (int) no_schedulers;
+    n = no_schedulers;
     erts_no_schedulers = n;
 
 #ifdef ERTS_SMP
@@ -3246,7 +3246,7 @@ erts_set_schedulers_online(Process *p,
     erts_smp_mtx_lock(&schdlr_sspnd.mtx);
 
     have_unlocked_plocks = 0;
-    no = (int) new_no;
+    no = new_no;
 
     changing = erts_smp_atomic32_read(&schdlr_sspnd.changing);
     if (changing) {
@@ -8629,7 +8629,7 @@ erts_debug_processes_bif_info(Process *c_p)
     Eterm elements[] = {
 	AM_processes_bif_info,
 	make_small((Uint) ERTS_PROCESSES_BIF_MIN_START_REDS),
-	make_small((Uint) processes_bif_tab_chunks),
+	make_small(processes_bif_tab_chunks),
 	make_small((Uint) ERTS_PROCESSES_BIF_TAB_CHUNK_SIZE),
 	make_small((Uint) ERTS_PROCESSES_BIF_TAB_INSPECT_INDICES_PER_RED),
 	make_small((Uint) ERTS_PROCESSES_BIF_TAB_FREE_TERM_PROC_REDS),

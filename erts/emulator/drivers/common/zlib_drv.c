@@ -121,7 +121,7 @@ static int i32(char* buf)
 static inline int i32(char* buf)
 #endif
 {
-    return (int) (
+    return (
 		  (((int)((unsigned char*)buf)[0]) << 24) |
 		  (((int)((unsigned char*)buf)[1]) << 16) |
 		  (((int)((unsigned char*)buf)[2]) << 8) |

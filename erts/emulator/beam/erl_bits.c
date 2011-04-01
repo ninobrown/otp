@@ -666,7 +666,7 @@ fmt_int(byte *buf, Uint sz, Eterm val, Uint size, Uint flags)
 		    n -= sizeof(ErtsDigit);
 		}
 		if (n) {
-		    acc |= ((ErtsDigit)*dp << offs);
+		    acc |= (*dp << offs);
 		    do {
 			SUBc((acc & 0xff), &c, buf);
 			buf--;
@@ -695,7 +695,7 @@ fmt_int(byte *buf, Uint sz, Eterm val, Uint size, Uint flags)
 		    n -= sizeof(ErtsDigit);
 		}
 		if (n) {
-		    acc |= ((ErtsDigit)*dp << offs);
+		    acc |= (*dp << offs);
 		    do {
 			*buf-- = acc & 0xff;
 			acc >>= 8;

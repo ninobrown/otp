@@ -1734,7 +1734,7 @@ info_1_tuple(Process* BIF_P,	/* Pointer to current process. */
 #endif
 	    int buf_size = 8*1024; /* Try with 8KB first */
 	    char *buf = erts_alloc(ERTS_ALC_T_TMP, buf_size);
-	    int r = io_list_to_buf(*tp, (char*) buf, buf_size - 1);
+	    int r = io_list_to_buf(*tp, buf, buf_size - 1);
 	    if (r < 0) {
 		erts_free(ERTS_ALC_T_TMP, (void *) buf);
 		buf_size = io_list_len(*tp);
@@ -1742,7 +1742,7 @@ info_1_tuple(Process* BIF_P,	/* Pointer to current process. */
 		    goto badarg;
 		buf_size++;
 		buf = erts_alloc(ERTS_ALC_T_TMP, buf_size);
-		r = io_list_to_buf(*tp, (char*) buf, buf_size - 1);
+		r = io_list_to_buf(*tp, buf, buf_size - 1);
 		ASSERT(r == buf_size - 1);
 	    }
 	    buf[buf_size - 1 - r] = '\0';
@@ -3416,7 +3416,7 @@ BIF_RETTYPE erts_debug_get_internal_state_1(BIF_ALIST_1)
 		if (groups < (Sint) 1 || groups > (Sint) INT_MAX)
 		    BIF_ERROR(BIF_P, BADARG);
 
-		BIF_RET(erts_debug_reader_groups_map(BIF_P, (int) groups));
+		BIF_RET(erts_debug_reader_groups_map(BIF_P, groups));
 	    }
 	    break;
 	}

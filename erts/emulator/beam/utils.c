@@ -310,7 +310,7 @@ erts_print(int to, void *arg, char *format, ...)
 	    res = -EINVAL;
 	    break;
 	default:
-	    res = erts_vfdprintf((int) to, format, arg_list);
+	    res = erts_vfdprintf(to, format, arg_list);
 	    break;
 	}
     }
@@ -2409,7 +2409,7 @@ tailrecur_ne:
 		/* compare the arities */
 		i = arityval(ahdr);	/* get the arity*/
 		if (i != arityval(*bb)) {
-		    RETURN_NEQ((int)(i - arityval(*bb)));
+		    RETURN_NEQ((i - arityval(*bb)));
 		}
 		if (i == 0) {
 		    goto pop_next;

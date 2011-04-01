@@ -1134,7 +1134,7 @@ insert_offheap(ErlOffHeap *oh, int type, Eterm id)
 		    int actual_need = BIG_UWORD_HEAP_SIZE(val);
 		    ASSERT(actual_need <= (BIG_UINT_HEAP_SIZE*2));
 		    UseTmpHeapNoproc(actual_need);
-		    a.id = erts_bld_uword(&hp, NULL, (UWord) val);
+		    a.id = erts_bld_uword(&hp, NULL, val);
 #else
 		    UseTmpHeapNoproc(BIG_UINT_HEAP_SIZE);
 		    a.id = erts_bld_uint(&hp, NULL, (Uint) u.pb->val);

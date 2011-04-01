@@ -714,7 +714,7 @@ int enif_get_int(ErlNifEnv* env, Eterm term, int* ip)
     if (!term_to_Sint(term, &i) || i < INT_MIN || i > INT_MAX) {
 	return 0;
     }
-    *ip = (int) i;
+    *ip = i;
     return 1;
 #else
 #  error Unknown word size 
@@ -730,7 +730,7 @@ int enif_get_uint(ErlNifEnv* env, Eterm term, unsigned* ip)
     if (!term_to_Uint(term, &i) || i > UINT_MAX) {
 	return 0;
     }
-    *ip = (unsigned) i;
+    *ip = i;
     return 1;
 #endif     
 }
@@ -1307,7 +1307,7 @@ static BeamInstr** get_func_pp(BeamInstr* mod_code, Eterm f_atom, unsigned arity
 	BeamInstr* code_ptr = (BeamInstr*) mod_code[MI_FUNCTIONS+j];
 	ASSERT(code_ptr[0] == (BeamInstr) BeamOp(op_i_func_info_IaaI));
 	if (f_atom == ((Eterm) code_ptr[3])
-	    && arity == ((unsigned) code_ptr[4])) {
+	    && arity == (code_ptr[4])) {
 
 	    return (BeamInstr**) &mod_code[MI_FUNCTIONS+j];
 	}
@@ -1605,7 +1605,7 @@ BIF_RETTYPE load_nif_2(BIF_ALIST_2)
 	    }
 	    else { /* Function traced, patch the original instruction word */
 		BpData** bps = (BpData**) code_ptr[1];
-		BpData*  bp  = (BpData*) bps[bp_sched2ix()];
+		BpData*  bp  = bps[bp_sched2ix()];
 	        bp->orig_instr = (BeamInstr) BeamOp(op_call_nif);
 	    }	    
 	    code_ptr[5+1] = (BeamInstr) entry->funcs[i].fptr;

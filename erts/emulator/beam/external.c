@@ -370,7 +370,7 @@ byte *erts_encode_ext_dist_header_finalize(byte *ext, ErtsAtomCache *cache)
 	    }
 
 	    ip = &instr_buf[0] + (2+4)*iix;
-	    cix = (int) get_int16(&ip[0]);
+	    cix = get_int16(&ip[0]);
 	    ASSERT(0 <= cix && cix < ERTS_ATOM_CACHE_SIZE);
 	    atom = make_atom((Uint) get_int32(&ip[2]));
 	    if (cache->out_arr[cix] == atom) {
@@ -1390,7 +1390,7 @@ enc_atom(ErtsAtomCacheMap *acmp, Eterm atom, byte *ep, Uint32 dflags)
 	    put_int16(j, ep);
 	    ep += 2;
 	}
-	sys_memcpy((char *) ep, (char*)atom_tab(i)->name, (int) j);
+	sys_memcpy((char *) ep, (char*)atom_tab(i)->name, j);
 	ep += j;
 	return ep;
     }

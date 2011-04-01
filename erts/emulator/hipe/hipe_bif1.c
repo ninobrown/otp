@@ -434,10 +434,10 @@ BIF_RETTYPE hipe_bifs_gc_info_0(BIF_ALIST_0)
 
     hp = HAlloc(BIF_P, 7);
     BIF_RET(TUPLE6(hp,
-		   make_small((Uint)minor_gc),
-		   make_small((Uint)major_gc),
-		   make_small((Uint)used_heap),
-		   make_small((Uint)alloc_heap),
+		   make_small(minor_gc),
+		   make_small(major_gc),
+		   make_small(used_heap),
+		   make_small(alloc_heap),
 		   make_small(max_used_heap),
 		   make_small(max_allocated_heap)));
 #else

@@ -120,7 +120,7 @@ testcase_drv_run(ErlDrvData drv_data, char *buf, int len)
     }
 
     msg[0] = ERL_DRV_ATOM;
-    msg[1] = (ErlDrvTermData) result_atom;
+    msg[1] = result_atom;
 
     msg[2] = ERL_DRV_PORT;
     msg[3] = driver_mk_port(itcs->port);

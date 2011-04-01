@@ -95,7 +95,7 @@ int erts_sys_ddll_open_noext(char *dlname, void **handle, ErtsSysDdllError* err)
     MODULE_ID mid;
     
     if((mid = get_mid(dlname)) == NULL) {
-	return ERL_DE_DYNAMIC_ERROR_OFFSET - ((int) ModuleNotFound);
+	return ERL_DE_DYNAMIC_ERROR_OFFSET - (ModuleNotFound);
     }
     *handle = (void *) mid;
     return ERL_DE_NO_ERROR;
@@ -149,7 +149,7 @@ int erts_sys_ddll_load_driver_init(void *handle, void **function)
     int need;
 
     if((modname = moduleNameGet(mid)) == NULL) {
-	return ERL_DE_DYNAMIC_ERROR_OFFSET - ((int) ModuleNotFound);
+	return ERL_DE_DYNAMIC_ERROR_OFFSET - (ModuleNotFound);
     }
     
     if((cp = strrchr(modname, '.')) == NULL) {
@@ -201,7 +201,7 @@ int erts_sys_ddll_close2(void *handle, ErtsSysDdllError* err)
 {
     MODULE_ID mid = (MODULE_ID) handle;
     if (unld(mid, 0) < 0) {
-	return  ERL_DE_DYNAMIC_ERROR_OFFSET - ((int) ModuleNotUnloadable);
+	return  ERL_DE_DYNAMIC_ERROR_OFFSET - (ModuleNotUnloadable);
     }
     return  ERL_DE_NO_ERROR;
 }
@@ -216,7 +216,7 @@ char *erts_sys_ddll_error(int code)
 	return "Unspecified error";
     }
     actual_code = -1*(code - ERL_DE_DYNAMIC_ERROR_OFFSET);
-    if (actual_code > ((int) UnknownError)) {
+    if (actual_code > (UnknownError)) {
 	actual_code = UnknownError;
     }
     return  errcode_tab[actual_code];

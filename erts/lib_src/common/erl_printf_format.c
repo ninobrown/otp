@@ -771,9 +771,9 @@ int erts_printf_format(fmtfn_t fn, void* arg, char* fmt, va_list ap)
 			       arg,
 			       USIGN((unsigned long) addr),
 			       (unsigned long) addr,
-			       width < 0 ? ((int) 2*sizeof(void *)) : width,
+			       width < 0 ? (2*sizeof(void *)) : width,
 			       (precision < 0
-				? ((int) 2*sizeof(void *))
+				? (2*sizeof(void *))
 				: precision),
 			       FMTC_x|FMTF_pad|FMTF_alt,
 			       &count);

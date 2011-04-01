@@ -4805,7 +4805,7 @@ no_stop_select_callback(ErlDrvEvent event, void* private)
 {
     erts_dsprintf_buf_t *dsbufp = erts_create_logger_dsbuf();    
     erts_dsprintf(dsbufp, "Driver does not implement stop_select callback "
-			  "(event=%ld, private=%p)!\n", (long)event, private);
+			  "(event=%ld, private=%p)!\n", event, private);
     erts_send_error_to_logger_nogl(dsbufp);
 }
 

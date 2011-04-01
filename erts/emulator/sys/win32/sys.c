@@ -191,7 +191,7 @@ void sys_primitive_init(HMODULE beam)
        handling... */
     _set_invalid_parameter_handler(&erts_sys_invalid_parameter_handler);
 #endif
-    beam_module = (HMODULE) beam;
+    beam_module = beam;
 }
 
 Uint

@@ -139,7 +139,7 @@ void MD5Update (context, input, inputLen)
     /*
      * Compute number of bytes mod 64
      */
-    index = (unsigned int)((context->count[0] >> 3) & 0x3F);
+    index = ((context->count[0] >> 3) & 0x3F);
 
     /* Update number of bits */
     if ((context->count[0] += ((Uint32)inputLen << 3))
@@ -190,7 +190,7 @@ void MD5Final (digest, context)
     /*
      * Pad out to 56 mod 64.
      */
-    index = (unsigned int)((context->count[0] >> 3) & 0x3f);
+    index = ((context->count[0] >> 3) & 0x3f);
     padLen = (index < 56) ? (56 - index) : (120 - index);
     MD5Update (context, PADDING, padLen);
 

@@ -572,7 +572,7 @@ erts_load_module(Process *c_p,
 	/*
 	 * The BEAM module is compressed (or possibly invalid/corrupted).
 	 */
-	if ((bin = (ErlDrvBinary *) erts_gzinflate_buffer((char*)code, size)) == NULL) {
+	if ((bin = erts_gzinflate_buffer((char*)code, size)) == NULL) {
 	    return -1;
 	}
 	result = bin_load(c_p, c_p_locks, group_leader, modp,
@@ -1932,7 +1932,7 @@ load_code(LoaderState* stp)
 	    case 'Q':		/* Like 'P', but packable */
 		VerifyTag(stp, tag, TAG_u);
 		tmp = tmp_op->a[arg].val;
-		code[ci++] = (BeamInstr) ((tmp_op->a[arg].val+1) * sizeof(Eterm));
+		code[ci++] = ((tmp_op->a[arg].val+1) * sizeof(Eterm));
 		break;
 	    case 'l':		/* Floating point register. */
 		VerifyTag(stp, tag_to_letter[tag], *sign);
@@ -3910,7 +3910,7 @@ final_touch(LoaderState* stp)
 	for (i = 0; i < stp->num_lambdas; i++) {
 	    unsigned entry_label = stp->lambdas[i].label;
 	    ErlFunEntry* fe = stp->lambdas[i].fe;
-	    BeamInstr* code_ptr = (BeamInstr *) (stp->code + stp->labels[entry_label].value);
+	    BeamInstr* code_ptr = (stp->code + stp->labels[entry_label].value);
 
 	    if (fe->address[0] != 0) {
 		/*
@@ -5278,7 +5278,7 @@ erts_make_stub_module(Process* p, Eterm Mod, Eterm Beam, Eterm Info)
      */
     if (!(size >= 4 && bytes[0] == 'F' && bytes[1] == 'O' &&
 	  bytes[2] == 'R' && bytes[3] == '1')) {
-	bin = (ErlDrvBinary *) erts_gzinflate_buffer((char*)bytes, size);
+	bin = erts_gzinflate_buffer((char*)bytes, size);
 	if (bin == NULL) {
 	    goto error;
 	}
@@ -5400,7 +5400,7 @@ erts_make_stub_module(Process* p, Eterm Mod, Eterm Beam, Eterm Info)
 #else
 	op = (Eterm) BeamOpCode(op_move_return_nr);
 #endif
-	fp = make_stub(fp, Mod, func, arity, (Uint)native_address, op);
+	fp = make_stub(fp, Mod, func, arity, native_address, op);
     }
 
     /*

@@ -386,11 +386,11 @@ int ConGetKey(void)
 
 int ConGetColumns(void) 
 {
-    return (int) canvasColumns; /* 32bit atomic on windows */
+    return canvasColumns; /* 32bit atomic on windows */
 }
 
 int ConGetRows(void) {
-    return (int) canvasRows;
+    return canvasRows;
 }
 
 

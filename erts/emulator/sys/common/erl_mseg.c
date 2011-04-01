@@ -899,7 +899,7 @@ mseg_realloc(ErtsAlcType_t atype, void *seg, Uint old_size, Uint *new_size_p,
 #if !CAN_PARTLY_DESTROY
 	do_recreate:
 #endif
-	    new_seg = mseg_recreate(mk, (void *) seg, old_size, new_size);
+	    new_seg = mseg_recreate(mk, seg, old_size, new_size);
 	    if (erts_mtrace_enabled)
 		erts_mtrace_crr_realloc(new_seg, atype, SEGTYPE, seg, new_size);
 	    if (!new_seg)
@@ -1679,7 +1679,7 @@ static void *do_map(void *ptr, size_t sz)
 #ifdef HARDDEBUG
 	fprintf(stderr,"Mapping of address %p with size %ld "
 		"does not map complete pages\r\n",
-		(void *) ptr, (unsigned long) sz);
+		ptr, (unsigned long) sz);
 #endif
 	return NULL;
     }
@@ -1688,7 +1688,7 @@ static void *do_map(void *ptr, size_t sz)
 #ifdef HARDDEBUG
 	fprintf(stderr,"Mapping of address %p with size %ld "
 		"is not page aligned\r\n",
-		(void *) ptr, (unsigned long) sz);
+		ptr, (unsigned long) sz);
 #endif
 	return NULL;
     }
@@ -1705,7 +1705,7 @@ static void *do_map(void *ptr, size_t sz)
     if (res == MAP_FAILED) {
 #ifdef HARDDEBUG
 	fprintf(stderr,"Mapping of address %p with size %ld failed!\r\n",
-		(void *) ptr, (unsigned long) sz);
+		ptr, (unsigned long) sz);
 #endif
 	return NULL;
     }
@@ -1721,7 +1721,7 @@ static int do_unmap(void *ptr, size_t sz)
 #ifdef HARDDEBUG
 	fprintf(stderr,"Mapping of address %p with size %ld "
 		"does not map complete pages\r\n",
-		(void *) ptr, (unsigned long) sz);
+		ptr, (unsigned long) sz);
 #endif
 	return 1;
     }
@@ -1730,7 +1730,7 @@ static int do_unmap(void *ptr, size_t sz)
 #ifdef HARDDEBUG
 	fprintf(stderr,"Mapping of address %p with size %ld "
 		"is not page aligned\r\n",
-		(void *) ptr, (unsigned long) sz);
+		ptr, (unsigned long) sz);
 #endif
 	return 1;
     }
@@ -1744,7 +1744,7 @@ static int do_unmap(void *ptr, size_t sz)
     if (res == MAP_FAILED) {
 #ifdef HARDDEBUG
 	fprintf(stderr,"Mapping of address %p with size %ld failed!\r\n",
-		(void *) ptr, (unsigned long) sz);
+		ptr, (unsigned long) sz);
 #endif
 	return 1;
     }
@@ -1831,7 +1831,7 @@ static void dump_freelist(void)
 
     while (p) {
 	printf("p = %p\r\np->num = %ld\r\np->next = %p\r\n\r\n",
-	       (void *) p, (unsigned long) p->num, (void *) p->next);
+	       (void *) p, p->num, (void *) p->next);
 	p = p->next;
     }
 }

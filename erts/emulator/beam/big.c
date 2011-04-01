@@ -138,8 +138,8 @@
 
 /* If we do not have double digit then we have some more work to do */
 #define H_EXP (D_EXP >> 1)
-#define LO_MASK ((ErtsDigit)((DCONST(1) << H_EXP)-1))
-#define HI_MASK ((ErtsDigit)(LO_MASK << H_EXP))
+#define LO_MASK (((DCONST(1) << H_EXP)-1))
+#define HI_MASK ((LO_MASK << H_EXP))
 
 #define DGT(a,b) ((a)>(b))
 #define DEQ(a,b) ((a)==(b))

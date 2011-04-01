@@ -466,7 +466,7 @@ destroy_match_pseudo_process(void)
     if (mpsp) {
 	cleanup_match_pseudo_process(mpsp, 0);
 	erts_free(ERTS_ALC_T_DB_MS_PSDO_PROC, (void *) mpsp);
-	erts_smp_tsd_set(match_pseudo_process_key, (void *) NULL);
+	erts_smp_tsd_set(match_pseudo_process_key, NULL);
     }
 }
 #endif
@@ -3677,7 +3677,7 @@ static DMCRet dmc_and(DMCContext *context,
 	    do_emit_constant(context, text, p[i]);
     }
     DMC_PUSH(*text, matchAnd);
-    DMC_PUSH(*text, (Uint) a - 1);
+    DMC_PUSH(*text, a - 1);
     context->stack_used -= (a - 2);
     return retOk;
 }
@@ -3706,7 +3706,7 @@ static DMCRet dmc_or(DMCContext *context,
 	    do_emit_constant(context, text, p[i]);
     }
     DMC_PUSH(*text, matchOr);
-    DMC_PUSH(*text, (Uint) a - 1);
+    DMC_PUSH(*text, a - 1);
     context->stack_used -= (a - 2);
     return retOk;
 }

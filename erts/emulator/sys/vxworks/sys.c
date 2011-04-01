@@ -1078,10 +1078,10 @@ static void fd_stop(ErlDrvData drv_data)
     int ofd;
     int fd = (int) drv_data;
 
-    nbio_stop_fd(driver_data[fd].port_num, (int)fd);
+    nbio_stop_fd(driver_data[fd].port_num, fd);
     ofd = driver_data[fd].ofd;
     if (ofd != fd && ofd != -1) 
-	nbio_stop_fd(driver_data[fd].port_num, (int)ofd); /* XXX fd = ofd? */
+	nbio_stop_fd(driver_data[fd].port_num, ofd); /* XXX fd = ofd? */
 }
 
 static ErlDrvData

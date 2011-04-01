@@ -335,7 +335,7 @@ insert_timer(ErlTimer* p, Uint t)
     
     /* calculate slot */
     tm = (ticks + tiw_pos) % TIW_SIZE;
-    p->slot = (Uint) tm;
+    p->slot = tm;
     p->count = (Uint) (ticks / TIW_SIZE);
   
     /* insert at head of list at slot */
@@ -440,7 +440,7 @@ erts_time_left(ErlTimer *p)
 
     erts_smp_mtx_unlock(&tiw_lock);
 
-    return (Uint) left * itime;
+    return left * itime;
 }
 
 #ifdef DEBUG

@@ -2007,12 +2007,12 @@ do_next_vheap_size(Uint64 vheap, Uint64 vheap_sz) {
      *          ----------------------
      */
 
-    if ((Uint64) vheap/3 > (Uint64) (vheap_sz/4)) {
+    if (vheap/3 > (vheap_sz/4)) {
 	Uint64 new_vheap_sz = vheap_sz;
 
-	while((Uint64) vheap/3 > (Uint64) (vheap_sz/4)) {
+	while(vheap/3 > (vheap_sz/4)) {
 	    /* the golden ratio = 1.618 */
-	    new_vheap_sz = (Uint64) vheap_sz * 1.618;
+	    new_vheap_sz = vheap_sz * 1.618;
 	    if (new_vheap_sz < vheap_sz ) {
 	        return vheap_sz;
 	    }
@@ -2022,7 +2022,7 @@ do_next_vheap_size(Uint64 vheap, Uint64 vheap_sz) {
 	return vheap_sz;
     }
 
-    if (vheap < (Uint64) (vheap_sz/4)) {
+    if (vheap < (vheap_sz/4)) {
 	return (vheap_sz >> 1);
     }
 

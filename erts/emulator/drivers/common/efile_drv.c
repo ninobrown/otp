@@ -1714,7 +1714,7 @@ static void invoke_fadvise(void *data)
     int fd = (int) d->fd;
     off_t offset = (off_t) d->c.fadvise.offset;
     off_t length = (off_t) d->c.fadvise.length;
-    int advise = (int) d->c.fadvise.advise;
+    int advise = d->c.fadvise.advise;
 
     d->again = 0;
     d->result_ok = efile_fadvise(&d->errInfo, fd, offset, length, advise);
@@ -1793,7 +1793,7 @@ static void cq_execute(file_descriptor *desc) {
 	return;
     if (! (d = cq_deq(desc)))
 	return;
-    TRACE_F(("x%i", (int) d->command));
+    TRACE_F(("x%i", d->command));
     d->again = sys_info.async_threads == 0;
     DRIVER_ASYNC(d->level, desc, d->invoke, void_ptr=d, d->free);
 }
@@ -2036,7 +2036,7 @@ file_async_ready(ErlDrvData e, ErlDrvThreadData data)
 		reply_error(desc, &d->errInfo);
 	    else {
 		resbuf[0] = FILE_RESP_FNAME;
-		length = 1+FILENAME_BYTELEN((char*) resbuf+1);
+		length = 1+FILENAME_BYTELEN(resbuf+1);
 		TRACE_C('R');
 		driver_output2(desc->port, resbuf, 1, resbuf+1, length-1);
 	    }

@@ -131,7 +131,7 @@ static int term_to_int(Eterm term, int *sp)
 	    return 0;
 	}
 	while (xl-- > 0) {
-	    uval |= ((unsigned)(*xr++)) << n;
+	    uval |= ((*xr++)) << n;
 	    n += D_EXP;
 	}
 	if (sign) {

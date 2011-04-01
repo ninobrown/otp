@@ -79,7 +79,7 @@ static void from_port(ErlDrvData data, ErlDrvEvent ev)
 {
 #ifdef __WIN32__
     /*static int counter = 0;*/
-    driver_select((ErlDrvPort) data, (ErlDrvEvent) ev, 
+    driver_select((ErlDrvPort) data, ev,
 		  DO_READ, 0);
     CloseHandle((HANDLE) ev);
     /*fprintf(stderr,"Close no %d\r\n",counter++);*/

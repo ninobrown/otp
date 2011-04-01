@@ -1047,8 +1047,8 @@ static void kill_worker(Worker *pw)
 
     DEBUGF(3,("Killing worker[%ld] with fd %d, serial %d", 
 	      (long) pw->pid,
-	      (int) pw->readfrom, 
-	      (int) pw->serial));
+	      pw->readfrom,
+	      pw->serial));
     kill(pw->pid, SIGUSR1);
     /* This is all just to check that the child died, not 
        really necessary */
@@ -1369,7 +1369,7 @@ static int send_request_to_worker(AddrByte *pr, int rsize, Worker *pw)
 	warning("Unable to write to child process.");
 	return -1;
     }
-    if (write_exact(pw->writeto, (AddrByte *) pr, rsize) < 0) { 
+    if (write_exact(pw->writeto, pr, rsize) < 0) {
 	warning("Unable to write to child process.");
 	return -1;
     }
@@ -1580,7 +1580,7 @@ static int create_worker(Worker *pworker, int save_que)
 	pworker->que_size = 0;
     }
     DEBUGF(3,("Created worker[%ld] with fd %d", 
-	      (long) pworker->pid, (int) pworker->readfrom));
+	      (long) pworker->pid, pworker->readfrom));
     return 0;
 }
 
@@ -1625,7 +1625,7 @@ static int create_worker(Worker *pworker, int save_que)
 	    pworker->que_size = 0;
 	}
 	DEBUGF(3,("Created worker[%ld] with fd %d", 
-		  (long) pworker->pid, (int) pworker->readfrom));
+		  (long) pworker->pid, pworker->readfrom));
 	return 0;
     } else { /* child */
 	close(p1[1]);

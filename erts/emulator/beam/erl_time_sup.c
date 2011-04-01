@@ -148,7 +148,7 @@ static void get_tolerant_timeofday(SysTimeval *tv)
 	    SysHrTime corr = (curr - hr_last_time) / 100;
 	    if (corr / 1000 >= diffdiff) {
 		++done;
-		hr_correction -= ((SysHrTime)diffdiff) * 1000;
+		hr_correction -= (diffdiff) * 1000;
 	    } else {
 		hr_correction -= corr;
 	    }
@@ -157,7 +157,7 @@ static void get_tolerant_timeofday(SysTimeval *tv)
 	    SysHrTime corr = (curr - hr_last_time) / 100;
 	    if (corr / 1000 >= -diffdiff) {
 		++done;
-		hr_correction -= ((SysHrTime)diffdiff) * 1000;
+		hr_correction -= (diffdiff) * 1000;
 	    } else {
 		hr_correction += corr;
 	    }

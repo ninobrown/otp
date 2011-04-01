@@ -875,7 +875,7 @@ BIF_RETTYPE spawn_opt_1(BIF_ALIST_1)
 		    goto error;
 		if (scheduler < 0 || erts_no_schedulers < scheduler)
 		    goto error;
-		so.scheduler = (int) scheduler;
+		so.scheduler = scheduler;
 	    } else {
 		goto error;
 	    }

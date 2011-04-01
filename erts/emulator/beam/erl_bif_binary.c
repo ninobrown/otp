@@ -493,7 +493,7 @@ static int ac_find_first_match(ACFindFirstState *state, byte *haystack,
 	    q = q->g[haystack[i]];
 	}
 #ifdef HARDDEBUG
-	erts_printf("ch = %c, Current: %u\n", (int) haystack[i], (unsigned) q->id);
+	erts_printf("ch = %c, Current: %u\n", (int) haystack[i], q->id);
 #endif
 	++i;
 	if (candidate != NULL && (i - q->d) > candidate_start) {
@@ -632,7 +632,7 @@ static int ac_find_all_non_overlapping(ACFindAllState *state, byte *haystack,
 				 (out[m-1].pos == rstart &&
 				  out[m-1].len < r->d))) {
 #ifdef HARDDEBUG
-		    erts_printf("Popping %u\n",(unsigned) out[m-1].id);
+		    erts_printf("Popping %u\n",out[m-1].id);
 #endif
 		    --m;
 		}
@@ -663,7 +663,7 @@ static int ac_find_all_non_overlapping(ACFindAllState *state, byte *haystack,
 #endif
 		    ++m;
 #ifdef HARDDEBUG
-		    erts_printf("Pushing %u\n",(unsigned) out[m-1].id);
+		    erts_printf("Pushing %u\n",out[m-1].id);
 #endif
 		} else {
 #ifdef HARDDEBUG
@@ -2562,7 +2562,7 @@ BIF_RETTYPE binary_referenced_byte_size_1(BIF_ALIST_1)
 	/* XXX:PaN - Halfword - orig_size is a long, we should handle that */
 	res = erts_make_integer((Uint) pb->val->orig_size, BIF_P);
     } else { /* heap binary */
-	res = erts_make_integer((Uint) ((ErlHeapBin *) pb)->size, BIF_P);
+	res = erts_make_integer(((ErlHeapBin *) pb)->size, BIF_P);
     }
     BIF_RET(res);
 }
@@ -2913,10 +2913,10 @@ static void dump_ac_node(ACNode *node, int indent, int ch) {
     memset(spaces,' ',10*indent);
     spaces[10*indent] = '\0';
     erts_printf("%s-> %c\n",spaces,ch);
-    erts_printf("%sId: %u\n",spaces,(unsigned) node->id);
-    erts_printf("%sD: %u\n",spaces,(unsigned)node->d);
-    erts_printf("%sFinal: %d\n",spaces,(int)node->final);
-    erts_printf("%sFail: %u\n",spaces,(unsigned)node->h->id);
+    erts_printf("%sId: %u\n",spaces,node->id);
+    erts_printf("%sD: %u\n",spaces,node->d);
+    erts_printf("%sFinal: %d\n",spaces,node->final);
+    erts_printf("%sFail: %u\n",spaces,node->h->id);
     erts_free(ERTS_ALC_T_TMP,spaces);
     for(i=0;i<ALPHABET_SIZE;++i) {
 	if (node->g[i] != NULL && node->g[i] != node) {
@@ -2930,8 +2930,8 @@ static void dump_ac_trie(ACTrie *act)
 {
     erts_printf("Aho Corasick Trie dump.\n");
     erts_printf("=======================\n");
-    erts_printf("Node counter: %u\n", (unsigned) act->idc);
-    erts_printf("Searchstring counter: %u\n", (unsigned) act->counter);
+    erts_printf("Node counter: %u\n", act->idc);
+    erts_printf("Searchstring counter: %u\n", act->counter);
     erts_printf("Trie:\n");
     dump_ac_node(act->root, 0, '0');
     return;

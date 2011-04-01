@@ -5963,7 +5963,7 @@ build_stacktrace(Process* c_p, Eterm exc) {
 	 * Finally, we go through the saved continuation pointers.
 	 */
 	for (i = 0; i < depth; i++) {
-	    BeamInstr *fi = find_function_from_pc((BeamInstr *) s->trace[i]);
+	    BeamInstr *fi = find_function_from_pc(s->trace[i]);
 	    if (fi == NULL) continue;
 	    mfa = TUPLE3(hp, fi[0], fi[1], make_small(fi[2]));
 	    hp += 4;

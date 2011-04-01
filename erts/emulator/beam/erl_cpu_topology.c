@@ -128,7 +128,7 @@ static erts_cpu_groups_map_t *reader_groups_map;
 
 #define ERTS_TOPOLOGY_CG ERTS_TOPOLOGY_MAX_DEPTH
 
-#define ERTS_MAX_CPU_TOPOLOGY_ID ((int) 0xffff)
+#define ERTS_MAX_CPU_TOPOLOGY_ID (0xffff)
 
 #ifdef ERTS_SMP
 static void cpu_bind_order_sort(erts_cpu_topology_t *cpudata,

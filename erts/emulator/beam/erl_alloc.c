@@ -733,7 +733,7 @@ start_au_allocator(ErtsAlcType_t alctr_n,
 	states = ((((UWord) states) & ERTS_CACHE_LINE_MASK)
 		  ? (void *) ((((UWord) states) & ~ERTS_CACHE_LINE_MASK)
 			      + ERTS_CACHE_LINE_SIZE)
-		  : (void *) states);
+		  : states);
 	tspec->allctr[0] = init->thr_spec > 0 ? (Allctr_t *) state : (Allctr_t *) NULL;
 	size = tspec->size;
 	for (i = 1; i < size; i++)
@@ -3306,7 +3306,7 @@ debug_free(ErtsAlcType_t n, void *extra, void *ptr)
 
     dptr = check_memory_fence(ptr, &size, n, ERTS_ALC_O_FREE);
 
-    sys_memset((void *) dptr, n, size + FENCE_SZ);
+    sys_memset(dptr, n, size + FENCE_SZ);
 
     (*real_af->free)(n, real_af->extra, dptr);
 

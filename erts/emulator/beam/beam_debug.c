@@ -254,7 +254,7 @@ erts_debug_disassemble_1(Process* p, Eterm addr)
 
     dsbufp = erts_create_tmp_dsbuf(0);
     erts_print(ERTS_PRINT_DSBUF, (void *) dsbufp, HEXF ": ", code_ptr);
-    instr = (BeamInstr) code_ptr[0];
+    instr = code_ptr[0];
     for (i = 0; i < NUM_SPECIFIC_OPS; i++) {
 	if (instr == (BeamInstr) BeamOp(i) && opc[i].name[0] != '\0') {
 	    code_ptr += print_op(ERTS_PRINT_DSBUF, (void *) dsbufp,
@@ -340,7 +340,7 @@ print_op(int to, void *to_arg, int op, int size, BeamInstr* addr)
 	 * Avoid copying because instructions containing bignum operands
 	 * are bigger than actually declared.
 	 */
-	ap = (BeamInstr *) addr;
+	ap = addr;
     } else {
 	/*
 	 * Copy all arguments to a local buffer for the unpacking.

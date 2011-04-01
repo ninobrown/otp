@@ -339,7 +339,7 @@ BIF_RETTYPE port_call_3(BIF_ALIST_3)
     prc  = (char *) port_resp;
     fpe_was_unmasked = erts_block_fpe();
     ret = drv->call((ErlDrvData)p->drv_data, 
-		    (unsigned) op,
+		    op,
 		    (char *) bytes, 
 		    (int) real_size,
 		    &prc, 

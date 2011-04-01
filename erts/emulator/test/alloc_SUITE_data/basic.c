@@ -48,7 +48,7 @@ testcase_run(TestCaseState_t *tcs)
     ASSERT(tcs, IS_LAST_BLK(blk));
     ASSERT(tcs, IS_FREE_BLK(blk));
 
-    STOP_ALC((Allctr_t *) a);
+    STOP_ALC(a);
     tcs->extra = NULL;
 
 }

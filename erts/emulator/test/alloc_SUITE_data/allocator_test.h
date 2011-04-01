@@ -47,18 +47,18 @@ typedef void* erts_cond;
 
 /* From erl_alloc_util.c */
 
-#define BLK_SZ(B)		((Ulong)	ALC_TEST1(0x000, (B)))
-#define UMEM_SZ(B)		((Ulong)	ALC_TEST1(0x001, (B)))
-#define IS_PREV_FREE_BLK(B)	((Ulong)	ALC_TEST1(0x002, (B)))
-#define IS_FREE_BLK(B)		((Ulong)	ALC_TEST1(0x003, (B)))
-#define IS_LAST_BLK(B)		((Ulong)	ALC_TEST1(0x004, (B)))
+#define BLK_SZ(B)		(ALC_TEST1(0x000, (B)))
+#define UMEM_SZ(B)		(ALC_TEST1(0x001, (B)))
+#define IS_PREV_FREE_BLK(B)	(ALC_TEST1(0x002, (B)))
+#define IS_FREE_BLK(B)		(ALC_TEST1(0x003, (B)))
+#define IS_LAST_BLK(B)		(ALC_TEST1(0x004, (B)))
 #define UMEM2BLK(U)		((Block_t *)	ALC_TEST1(0x005, (U)))
 #define BLK2UMEM(B)		((void *)	ALC_TEST1(0x006, (B)))
-#define IS_SBC(C)		((Ulong)	ALC_TEST1(0x007, (C)))
-#define IS_SBC_BLK(B)		((Ulong)	ALC_TEST1(0x008, (B)))
-#define IS_MBC(C)		((Ulong)	ALC_TEST1(0x009, (C)))
-#define IS_MMAP_C(C)		((Ulong)	ALC_TEST1(0x00a, (C)))
-#define C_SZ(C)			((Ulong)	ALC_TEST1(0x00b, (C)))
+#define IS_SBC(C)		(ALC_TEST1(0x007, (C)))
+#define IS_SBC_BLK(B)		(ALC_TEST1(0x008, (B)))
+#define IS_MBC(C)		(ALC_TEST1(0x009, (C)))
+#define IS_MMAP_C(C)		(ALC_TEST1(0x00a, (C)))
+#define C_SZ(C)			(ALC_TEST1(0x00b, (C)))
 #define SBC2BLK(A, C)		((Block_t *)	ALC_TEST2(0x00c, (A), (C)))
 #define BLK2SBC(A, B)		((Carrier_t *)	ALC_TEST2(0x00d, (A), (B)))
 #define MBC2FBLK(A, C)		((Block_t *)	ALC_TEST2(0x00e, (A), (C)))
@@ -69,28 +69,28 @@ typedef void* erts_cond;
 #define LAST_SBC(A)		((Carrier_t *)	ALC_TEST1(0x013, (A)))
 #define NEXT_C(C)		((Carrier_t *)	ALC_TEST1(0x014, (C)))
 #define PREV_C(C)		((Carrier_t *)	ALC_TEST1(0x015, (C)))
-#define ABLK_HDR_SZ		((Ulong)	ALC_TEST0(0x016))
-#define MIN_BLK_SZ(A)		((Ulong)	ALC_TEST1(0x017, (A)))
+#define ABLK_HDR_SZ		(ALC_TEST0(0x016))
+#define MIN_BLK_SZ(A)		(ALC_TEST1(0x017, (A)))
 #define NXT_BLK(B)		((Block_t *)	ALC_TEST1(0x018, (B)))
 #define PREV_BLK(B)		((Block_t *)	ALC_TEST1(0x019, (B)))
-#define IS_FIRST_BLK(B)		((Ulong)	ALC_TEST1(0x01a, (B)))
-#define UNIT_SZ			((Ulong)	ALC_TEST0(0x01b))
+#define IS_FIRST_BLK(B)		(ALC_TEST1(0x01a, (B)))
+#define UNIT_SZ			(ALC_TEST0(0x01b))
 
 /* From erl_goodfit_alloc.c */
-#define BKT_IX(A, S)		((Ulong)	ALC_TEST2(0x100, (A), (S)))
-#define BKT_MIN_SZ(A, I)	((Ulong)	ALC_TEST2(0x101, (A), (I)))
-#define NO_OF_BKTS		((Ulong)	ALC_TEST0(0x102))
+#define BKT_IX(A, S)		(ALC_TEST2(0x100, (A), (S)))
+#define BKT_MIN_SZ(A, I)	(ALC_TEST2(0x101, (A), (I)))
+#define NO_OF_BKTS		(ALC_TEST0(0x102))
 #define FIND_BKT(A, I)		((int)		ALC_TEST2(0x103, (A), (I)))
 
 /* From erl_bestfit_alloc.c */
-#define IS_AOBF(A)		((Ulong)	ALC_TEST1(0x200, (A)))
+#define IS_AOBF(A)		(ALC_TEST1(0x200, (A)))
 #define RBT_ROOT(A)		((RBT_t *)	ALC_TEST1(0x201, (A)))
 #define RBT_PARENT(T)		((RBT_t *)	ALC_TEST1(0x202, (T)))
 #define RBT_LEFT(T)		((RBT_t *)	ALC_TEST1(0x203, (T)))
 #define RBT_RIGHT(T)		((RBT_t *)	ALC_TEST1(0x204, (T)))
 #define RBT_NEXT(T)		((RBTL_t *)	ALC_TEST1(0x205, (T)))
-#define RBT_IS_BLACK(T)		((Ulong)	ALC_TEST1(0x206, (T)))
-#define RBT_IS_TREE(T)		((Ulong)	ALC_TEST1(0x207, (T)))
+#define RBT_IS_BLACK(T)		(ALC_TEST1(0x206, (T)))
+#define RBT_IS_TREE(T)		(ALC_TEST1(0x207, (T)))
 
 /* From erl_mseg.c */
 #define HAVE_MSEG()		((int)		ALC_TEST0(0x400))
@@ -99,8 +99,8 @@ typedef void* erts_cond;
 #define MSEG_REALLOC(P, OS, SP)	((void *)	ALC_TEST3(0x403, (P), (OS), \
 							  (SP)))
 #define MSEG_CLEAR_CACHE()	((void)		ALC_TEST0(0x404))
-#define MSEG_NO()		((Ulong)	ALC_TEST0(0x405))
-#define MSEG_CACHE_SIZE()	((Ulong)	ALC_TEST0(0x406))
+#define MSEG_NO()		(ALC_TEST0(0x405))
+#define MSEG_CACHE_SIZE()	(ALC_TEST0(0x406))
 
 /* From erl_alloc.c */
 
