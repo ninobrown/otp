@@ -3350,14 +3350,14 @@ t_to_string(?var(Id), _RecDict) when is_integer(Id) ->
 
 record_to_string(Tag, [_|Fields], FieldNames, RecDict) ->
   FieldStrings = record_fields_to_string(Fields, FieldNames, RecDict, []),
-  "#" ++ atom_to_list(Tag) ++ "{" ++ sequence(FieldStrings, [], ",") ++ "}".
+  "#" ++ atom_to_string(Tag) ++ "{" ++ sequence(FieldStrings, [], ",") ++ "}".
 
 record_fields_to_string([F|Fs], [{FName, _DefType}|FDefs], RecDict, Acc) ->
   NewAcc =
     case t_is_any(F) orelse t_is_atom('undefined', F) of
       true -> Acc;
       false ->
-	StrFV = atom_to_list(FName) ++ "::" ++ t_to_string(F, RecDict),
+	StrFV = atom_to_string(FName) ++ "::" ++ t_to_string(F, RecDict),
 	%% ActualDefType = t_subtract(DefType, t_atom('undefined')),
 	%% Str = case t_is_any(ActualDefType) of
 	%% 	  true -> StrFV;
@@ -3383,7 +3383,7 @@ field_diffs([F|Fs], [{FName, DefType}|FDefs], RecDict, Acc) ->
     case t_is_subtype(F, DefType) of
       true -> Acc;
       false ->
-	Str = atom_to_list(FName) ++ "::" ++ t_to_string(DefType, RecDict),
+	Str = atom_to_string(FName) ++ "::" ++ t_to_string(DefType, RecDict),
 	[Str|Acc]
     end,
   field_diffs(Fs, FDefs, RecDict, NewAcc);
@@ -3894,7 +3894,7 @@ t_form_to_string({type, _L, union, Args}) ->
   sequence(t_form_to_string_list(Args), " | ");
 t_form_to_string({type, _L, Name, []} = T) ->
   try t_to_string(t_from_form(T))
-  catch throw:{error, _} -> atom_to_list(Name) ++ "()"
+  catch throw:{error, _} -> atom_to_string(Name) ++ "()"
   end;
 t_form_to_string({type, _L, binary, [X,Y]} = Type) ->
   case {erl_eval:partial_eval(X), erl_eval:partial_eval(Y)} of
@@ -3919,6 +3919,9 @@ t_form_to_string_list([H|T], Acc) ->
 t_form_to_string_list([], Acc) ->
   lists:reverse(Acc).  
   
+atom_to_string(Atom) ->
+  io_lib:format("~w", [Atom]).
+
 %%=============================================================================
 %% 
 %% Utilities
