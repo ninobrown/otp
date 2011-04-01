@@ -84,6 +84,8 @@
 
 -export([advise/1]).
 
+-export([allocate/1]).
+
 -export([standard_io/1,mini_server/1]).
 
 %% Debug exports
@@ -114,7 +116,7 @@ groups() ->
      {files, [],
       [{group, open}, {group, pos}, {group, file_info},
        {group, consult}, {group, eval}, {group, script},
-       truncate, sync, datasync, advise]},
+       truncate, sync, datasync, advise, allocate]},
      {open, [],
       [open1, old_modes, new_modes, path_open, close, access,
        read_write, pread_write, append, open_errors,
@@ -492,8 +494,6 @@ win_cur_dir_1(_Config) ->
     ok.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 
 open1(suite) -> [];
 open1(doc) -> [];
@@ -1591,6 +1591,46 @@ advise(Config) when is_list(Config) ->
     ?line {ok, Line2} = ?FILE_MODULE:read_line(Fd9),
     ?line eof = ?FILE_MODULE:read_line(Fd9),
     ?line ok = ?FILE_MODULE:close(Fd9),
+
+    ?line [] = flush(),
+    ?line test_server:timetrap_cancel(Dog),
+    ok.
+
+allocate(suite) -> [];
+allocate(doc) -> "Tests that ?FILE_MODULE:allocate/2 at least doesn't crash.";
+allocate(Config) when is_list(Config) ->
+    ?line Dog = test_server:timetrap(test_server:seconds(5)),
+    ?line PrivDir = ?config(priv_dir, Config),
+    ?line Allocate = filename:join(PrivDir,
+			       atom_to_list(?MODULE)
+			       ++"_allocate.fil"),
+
+    Line1 = "Hello\n",
+    Line2 = "World!\n",
+
+    ?line {ok, Fd} = ?FILE_MODULE:open(Allocate, [write]),
+    ?line ok = ?FILE_MODULE:allocate(Fd, iolist_size([Line1, Line2])),
+    ?line ok = io:format(Fd, "~s", [Line1]),
+    ?line ok = io:format(Fd, "~s", [Line2]),
+    ?line ok = ?FILE_MODULE:close(Fd),
+
+    ?line {ok, Fd2} = ?FILE_MODULE:open(Allocate, [write]),
+    ?line ok = ?FILE_MODULE:allocate(Fd2, iolist_size(Line1)),
+    ?line ok = io:format(Fd2, "~s", [Line1]),
+    ?line ok = io:format(Fd2, "~s", [Line2]),
+    ?line ok = ?FILE_MODULE:close(Fd2),
+
+    ?line {ok, Fd3} = ?FILE_MODULE:open(Allocate, [write]),
+    ?line ok = ?FILE_MODULE:allocate(Fd3, iolist_size(Line1) + 1),
+    ?line ok = io:format(Fd3, "~s", [Line1]),
+    ?line ok = io:format(Fd3, "~s", [Line2]),
+    ?line ok = ?FILE_MODULE:close(Fd3),
+
+    ?line {ok, Fd4} = ?FILE_MODULE:open(Allocate, [write]),
+    ?line ok = ?FILE_MODULE:allocate(Fd4, 4 * iolist_size([Line1, Line2])),
+    ?line ok = io:format(Fd4, "~s", [Line1]),
+    ?line ok = io:format(Fd4, "~s", [Line2]),
+    ?line ok = ?FILE_MODULE:close(Fd4),
 
     ?line [] = flush(),
     ?line test_server:timetrap_cancel(Dog),
