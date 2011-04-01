@@ -632,6 +632,7 @@ erts_gzseek(gzFile file, int offset, int whence)
     while (s->position < pos) {
 	char buf[512];
 	int n;
+	int offset = s->position;
 
 	n = pos - s->position;
 	if (n > sizeof(buf))
@@ -643,6 +644,7 @@ erts_gzseek(gzFile file, int offset, int whence)
 	    memset(buf, '\0', n);
 	    erts_gzwrite(file, buf, n);
 	}
+	if (offset == s->position) break;
     }
 
     return s->position;
